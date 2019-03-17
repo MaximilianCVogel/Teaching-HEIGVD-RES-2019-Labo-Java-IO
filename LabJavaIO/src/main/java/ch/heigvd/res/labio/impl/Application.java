@@ -130,7 +130,7 @@ public class Application implements IApplication {
     File file = new File(folders);
     file.mkdirs();
     //final file with correct structure
-    OutputStreamWriter outputWriter = new OutputStreamWriter(new FileOutputStream(folders + "/" + filename), "utf-8");
+    OutputStreamWriter outputWriter = new OutputStreamWriter(new FileOutputStream(folders + "/" + filename), "UTF-8");
     outputWriter.write(quote.getQuote());
     outputWriter.flush();
     outputWriter.close();

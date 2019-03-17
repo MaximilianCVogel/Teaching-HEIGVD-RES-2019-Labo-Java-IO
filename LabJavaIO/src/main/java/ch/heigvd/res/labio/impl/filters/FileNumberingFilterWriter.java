@@ -3,6 +3,7 @@ package ch.heigvd.res.labio.impl.filters;
 import java.io.FilterWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.lang.reflect.Array;
 import java.util.logging.Logger;
 
 /**
@@ -18,6 +19,13 @@ import java.util.logging.Logger;
 public class FileNumberingFilterWriter extends FilterWriter {
 
   private static final Logger LOG = Logger.getLogger(FileNumberingFilterWriter.class.getName());
+  //we want to be counting lines to label them, there's 1 line at least
+  //we initialize each line
+  //we want to know wether we've already encountered a new line
+  private int lineCounter;
+  private int lastEncounteredChar = 0;
+  private boolean hasEncounteredFirstNewLine = false;
+
 
   public FileNumberingFilterWriter(Writer out) {
     super(out);
@@ -25,17 +33,38 @@ public class FileNumberingFilterWriter extends FilterWriter {
 
   @Override
   public void write(String str, int off, int len) throws IOException {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+    //throw new UnsupportedOperationException("The student has not implemented this method yet.");
+    write(str.toCharArray(), off, len);
   }
 
   @Override
   public void write(char[] cbuf, int off, int len) throws IOException {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+    //throw new UnsupportedOperationException("The student has not implemented this method yet.");
+    for(int i = off; i < off + len; ++i){
+      write(cbuf[i]);
+    }
   }
 
   @Override
   public void write(int c) throws IOException {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+    //throw new UnsupportedOperationException("The student has not implemented this method yet.");
+    //no need to add the checks wether we have encountered a new line, since there's only 1 character
+    if(!hasEncounteredFirstNewLine){
+      //first encountered lign, writing that
+      super.write(  lineCounter++ + '\t');
+      hasEncounteredFirstNewLine = true;
+    }else if(lastEncounteredChar == '\r' && c != '\n'){
+      super.write(  lineCounter++ + '\t');
+    }
+    //writing whatever char
+    super.write(c);
+
+    if(c == '\n'){
+      //before the next char, we'll have to indicate the lign
+      super.write(  lineCounter++ + '\t');
+    }
+    //remembering the char
+    lastEncounteredChar = c;
   }
 
 }
